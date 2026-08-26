@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+saved_models/*.pkl
+datasets/*.csv
+figures/
+.idea/
