@@ -47,7 +47,7 @@ for name, model in get_models(ratio_static).items():
 
     # Save Metrics as a Dictionary for Plotting
     model_results = calculate_metrics(model, val_x, val_y, preds, probs)
-    static_model_results[f"Static: {name}"] = model_results
+    static_model_results[name] = model_results
 
     # Save Models for Detection Agent
     filename = f"saved_models/static_{name.replace(' ', '_').lower()}.pkl"
@@ -69,7 +69,7 @@ for name, model in get_models(ratio_dynamic).items():
 
     # Print Accuracy and Time Metrics
     model_results = calculate_metrics(model, val_x, val_y, preds, probs)
-    dynamic_model_results[f"Dynamic: {name}"] = model_results
+    dynamic_model_results[name] = model_results
 
     # Save Models for Detection Agent (Full System Requirement)
     filename = f"saved_models/dynamic_{name.replace(' ', '_').lower()}.pkl"

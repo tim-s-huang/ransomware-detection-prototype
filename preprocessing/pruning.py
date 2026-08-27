@@ -12,3 +12,11 @@ def correlation_pruning(X, threshold):
     x_pruned = X.drop(columns=to_drop)
 
     return x_pruned
+
+# This Function was Written by Claude
+def variance_pruning(X, threshold=0.01):
+    variances = X.var()
+    keep = variances[variances > threshold].index
+    X_pruned = X[keep]
+
+    return X_pruned

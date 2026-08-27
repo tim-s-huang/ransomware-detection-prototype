@@ -55,6 +55,8 @@ def calculate_metrics(model, val_x, val_y, predictions, probabilities):
         "PR-AUC": round(average_precision_score(val_y, probabilities), 4),
         "Total Inference Time": round(total_runtime, 4),
         "Inference Time Per Sample": round(per_sample_runtime, 4),
-        "CPU Usage": round(cpu_after / psutil.cpu_count(), 2),
-        "Memory Size": round(model_size, 2)
+        "CPU Usage": round(cpu_after / psutil.cpu_count(), 4),
+        "Model Size": round(model_size, 4),
+        "Probabilities": probabilities,
+        "Y-Values": val_y
     }
