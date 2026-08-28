@@ -6,7 +6,7 @@ from sklearn.metrics import PrecisionRecallDisplay, ConfusionMatrixDisplay
 
 Path("figures").mkdir(exist_ok=True)
 
-# Plots Accuracy Graph
+# Plots Bar Chart for Provided Metric and Pipeline
 def plot_bar_chart(results, y_axis_name, title, filename, log_scale):
     # Turn Model Names and Values Into Lists
     names_list = list(results)
@@ -50,7 +50,7 @@ def plot_bar_chart(results, y_axis_name, title, filename, log_scale):
     plt.savefig(filename, dpi=300)
     plt.close()
 
-# Debugged with Calude
+# Debugged with Claude - Plots Static/Dynamic Comparison Bar Charts
 def plot_grouped_bar_chart(static_results, dynamic_results, metric, title, filename):
     # Turn Model names and Values into Lists
     model_names = list(static_results)
@@ -105,6 +105,7 @@ def plot_grouped_bar_chart(static_results, dynamic_results, metric, title, filen
     plt.savefig(filename, dpi=300)
     plt.close()
 
+# Debugged with Claude - Plots PR-AUC on Line Chart
 def plot_pr_curves(results, title, filename):
     # Creates Figure and Axes
     fig, ax = plt.subplots(figsize=(7, 6))
@@ -133,6 +134,7 @@ def plot_pr_curves(results, title, filename):
     plt.savefig(filename, dpi=300)
     plt.close()
 
+# Plots Confusion Matrix for Provided Model and Pipeline
 def plot_confusion_matrix(results, model_name, title, filename):
     # Creates Figure and Axes
     fig, ax = plt.subplots(figsize=(5, 4))
@@ -150,7 +152,7 @@ def plot_confusion_matrix(results, model_name, title, filename):
     plt.savefig(filename, dpi=300)
     plt.close()
 
-# Save Results to CSV - Debugged with Claude
+# Debugged with Claude - Saves Results to CSV
 def export_results_table(results, filename):
     exclude = ("Probabilities", "Y-Values", "Confusion Matrix")
     clean = {name: {k: v for k, v in metrics.items() if k not in exclude}
@@ -180,7 +182,7 @@ def display_results(static_models_results, dynamic_models_results):
 
     # Plot Grouped Bar Charts
     for metric in ["MCC", "False Positive Rate"]:
-        filename = f"figures/comparison_{metric}.png"
+        filename = f"figures/comparison_{metric.replace(' ', '_').lower()}.png"
         title = f"{metric} by Model: Static vs Dynamic Pipeline"
 
         plot_grouped_bar_chart(static_models_results, dynamic_models_results, metric, title, filename)

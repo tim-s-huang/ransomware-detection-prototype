@@ -25,24 +25,25 @@ def calculate_metrics(model, val_x, val_y, predictions, probabilities):
     # Access Current Python Process
     current_process = psutil.Process(os.getpid())
 
-    # Record CPU Baseline and Start Time before Classification
-    cpu_before = current_process.cpu_percent(interval=None)
+    # Establish CPU Baseline
+    current_process.cpu_percent(interval=None)
+
+    # Records Time taken for Classification
     start_time = time.perf_counter()
-
-    # Prediction Output Discarded
-    preds = model.predict(val_x)
-
-    # Record CPU Usage and End Time after Classification
+    model.predict(val_x)
     end_time = time.perf_counter()
+
+    # Records CPU Usage after Classification
     cpu_after = current_process.cpu_percent(interval=None)
 
     # Calculate Total Runtime
     total_runtime = end_time - start_time
     per_sample_runtime = (total_runtime / len(val_x)) * 1000
 
-    # Measure Model Size as a Proxy - Debugged by Claude
+    # Measure Model Size
     model_size = len(pickle.dumps(model)) / 1024 / 1024
 
+    # Returns all Metrics for Results as Dict
     return {
         "Accuracy":  round(accuracy_score(val_y, predictions), 4),
         "Precision": round(precision_score(val_y, predictions), 4),

@@ -6,12 +6,14 @@ from xgboost import XGBClassifier
 
 # Debugged with Claude
 def get_models(ratio):
+    # Random Forest Model with 200 Trees and Class Balancing
     rf = RandomForestClassifier(
         n_estimators = 200,
         random_state = 0,
         class_weight="balanced"
     )
 
+    # XGBoost Model with 200 Trees and Class Balancing
     xgb = XGBClassifier(
         n_estimators = 200,
         random_state = 0,
@@ -19,6 +21,7 @@ def get_models(ratio):
         scale_pos_weight = ratio
     )
 
+    # Logistic Regression Model Wrapped in Pipeline to Account for Scale-Sensitivity
     lr = make_pipeline(
         StandardScaler(),
         LogisticRegression(
@@ -29,6 +32,7 @@ def get_models(ratio):
         )
     )
 
+    # Ensemble Model Using Models Above and Soft Voting
     ensemble = VotingClassifier(
         estimators=[("rf", rf), ("xgb", xgb), ("lr", lr)],
         voting="soft",

@@ -1,6 +1,6 @@
 import numpy as np
 
-# This Function was Written by Claude
+# Written by Claude - Performs Correlation Pruning
 def correlation_pruning(X, threshold):
     corr_matrix = X.corr().abs()
 
@@ -13,7 +13,7 @@ def correlation_pruning(X, threshold):
 
     return x_pruned
 
-# This Function was Written by Claude
+# Written by Claude - Performs Variance Pruning
 def variance_pruning(X, threshold=0.01):
     variances = X.var()
     keep = variances[variances > threshold].index

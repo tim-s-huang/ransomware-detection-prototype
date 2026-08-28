@@ -18,7 +18,7 @@ MODELS = list(MODEL_FILES.keys())
 agent_model = None
 
 # Loads List of Expected Features for Uploaded CSV
-with open("saved_models/static_features.pk1", "rb") as f:
+with open("saved_models/static_features.pkl", "rb") as f:
     loaded_expected_features = pickle.load(f)
 
 # Debugged with Claude
@@ -73,6 +73,7 @@ def load_model(event):
     else:
         return
 
+# Inputs Provided File to Selected Model and returns Errorbox if Invalid
 def scan_file():
     path = selected_file_path.get()
 

@@ -8,7 +8,7 @@ import pickle
 from pathlib import Path
 Path("saved_models").mkdir(exist_ok=True)
 
-# Debugged with Claude
+# Written by Claude - Saves Labelled Ransom/Benign Samples for Demo
 def save_testing_data(X_static, y_static, n_per_class=10):
     ransomware_idx = y_static[y_static == 1].sample(n_per_class, random_state=42).index
     benign_idx = y_static[y_static == 0].sample(n_per_class, random_state=42).index
@@ -18,7 +18,7 @@ def save_testing_data(X_static, y_static, n_per_class=10):
 
     for i, idx in enumerate(demo_idx):
         sample = X_static.loc[[idx]]
-        label = "ransomware" if y_static.loc[idx] == 0 else "benign"
+        label = "ransomware" if y_static.loc[idx] == 1 else "benign"
         sample.to_csv(f"demo_samples/{label}_{i:02d}.csv", index=False)
 
     return X_static.drop(demo_idx), y_static.drop(demo_idx)
@@ -33,7 +33,7 @@ X_static, y_static = get_static_data()
 X_static, y_static = save_testing_data(X_static, y_static)
 
 # Save Feature List for Agent
-with open("saved_models/static_features.pk1", "wb") as f:
+with open("saved_models/static_features.pkl", "wb") as f:
     pickle.dump(list(X_static.columns), f)
 
 # Calculate Ratio for XGBoost Weighting Static
@@ -43,6 +43,7 @@ static_model_results = {}
 
 # Loop through ML models for Static Analysis
 for name, model in get_models(ratio_static).items():
+    # Trains Selected Model on Dataset
     val_x, val_y, preds, probs = run_model(X_static, y_static, model)
 
     # Save Metrics as a Dictionary for Plotting
@@ -65,9 +66,10 @@ dynamic_model_results = {}
 
 # Loop through ML models for Dynamic Analysis
 for name, model in get_models(ratio_dynamic).items():
+    # Trains Selected Model on Dataset
     val_x, val_y, preds, probs = run_model(X_dynamic, y_dynamic, model)
 
-    # Print Accuracy and Time Metrics
+    # Save Models Results as a Dictionary
     model_results = calculate_metrics(model, val_x, val_y, preds, probs)
     dynamic_model_results[name] = model_results
 

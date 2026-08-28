@@ -1,5 +1,4 @@
 from sklearn.model_selection import train_test_split
-from imblearn.over_sampling import SMOTE
 
 def run_model(X, y, model_select):
     # Stratified Train-Test Split
@@ -11,7 +10,7 @@ def run_model(X, y, model_select):
     # Generate Predictions for Testing Data
     predictions = model_select.predict(val_x)
 
-    # Generate Probabilites of Model Accuracy
+    # Generate Probabilities of Model Accuracy
     probabilities = model_select.predict_proba(val_x)[:,1]
 
     return val_x, val_y, predictions, probabilities
