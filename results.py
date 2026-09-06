@@ -6,8 +6,8 @@ from sklearn.metrics import PrecisionRecallDisplay, ConfusionMatrixDisplay
 
 Path("figures").mkdir(exist_ok=True)
 
-# Plots Bar Chart for Provided Metric and Pipeline
-def plot_bar_chart(results, y_axis_name, title, filename, log_scale):
+# Debugged with Claude - Plots Bar Chart for Provided Metric and Pipeline
+def plot_bar_chart(results, y_axis_name, title, filename, log_scale=False):
     # Turn Model Names and Values Into Lists
     names_list = list(results)
     y_axis_values = [results[name][y_axis_name] for name in results]
@@ -51,11 +51,12 @@ def plot_bar_chart(results, y_axis_name, title, filename, log_scale):
     plt.close()
 
 # Debugged with Claude - Plots Static/Dynamic Comparison Bar Charts
-def plot_grouped_bar_chart(static_results, dynamic_results, metric, title, filename):
+def plot_grouped_bar_chart(static_results, dynamic_results, metric, title, filename, log_scale=False):
     # Turn Model names and Values into Lists
     model_names = list(static_results)
     static_values = [static_results[name][metric] for name in model_names]
     dynamic_values = [dynamic_results[name][metric] for name in model_names]
+    all_values = static_values + dynamic_values
 
     # Set X Position for Each Group
     x = np.arange(len(model_names))
@@ -75,7 +76,11 @@ def plot_grouped_bar_chart(static_results, dynamic_results, metric, title, filen
     )
 
     # Set Y Scale
-    ax.set_ylim(0, max(static_values + dynamic_values) * 1.2)
+    if log_scale:
+        ax.set_yscale("log")
+        ax.set_ylim(min(all_values) * 0.5, max(all_values) * 3)
+    else:
+        ax.set_ylim(0, max(all_values) * 1.2)
 
     # Loops Over Each Bar and Adds its Value
     for bars in (static_bars, dynamic_bars):
@@ -83,7 +88,7 @@ def plot_grouped_bar_chart(static_results, dynamic_results, metric, title, filen
             ax.text(
                 bar.get_x() + bar.get_width() / 2,
                 bar.get_height() + 0.01,
-                f"{bar.get_height():.3f}",
+                f"{bar.get_height():.4f}",
                 ha="center", va="bottom", fontsize=8
             )
 
@@ -159,33 +164,36 @@ def export_results_table(results, filename):
              for name, metrics in results.items()}
     pd.DataFrame(clean).T.to_csv(filename)
 
+# Debugged with Claude - Generate all Results and save to Figures Folder
 def display_results(static_models_results, dynamic_models_results):
-    # Plot Bar Charts
-    bar_chart_metrics = ["Accuracy", "MCC", "False Positive Rate", "False Negative Rate", "Precision", "Recall", "F1-score", "Inference Time Per Sample", "Model Size"]
-
     pipelines = {
         "Static": static_models_results,
         "Dynamic": dynamic_models_results
     }
+
+    # Plot Individual Bar Charts for Appendix
+    bar_chart_metrics = ["Accuracy", "Precision", "Recall", "F1-score", "MCC", "False Positive Rate", "False Negative Rate", "Inference Time Per Sample", "Model Size", "Memory Usage"]
+    log_scale_metrics = ["Inference Time Per Sample", "Model Size"]
 
     # Loop Metric for each Pipeline to Plot Bar Charts
     for pipeline_name, results in pipelines.items():
         for metric in bar_chart_metrics:
             filename = f"figures/{pipeline_name.lower()}_{metric.replace(' ', '_').lower()}.png"
             title = f"{pipeline_name} Pipeline: {metric} by Model"
+            plot_bar_chart(results, metric, title, filename, metric in log_scale_metrics)
 
-            # Choose Scale Type and Plot Bar Charts
-            if metric == "Inference Time Per Sample" or metric == "Model Size":
-                plot_bar_chart(results, metric, title, filename, True)
-            else:
-                plot_bar_chart(results, metric, title, filename, False)
+    # Plot Grouped Bar Charts for Results
+    comparison_linear_metrics = ["MCC", "False Positive Rate", "Memory Usage"]
+    comparison_log_metrics = ["Inference Time Per Sample", "Model Size"]
 
-    # Plot Grouped Bar Charts
-    for metric in ["MCC", "False Positive Rate"]:
+    # Loop Metric for each Pipeline to Plot Grouped Bar Charts
+    for metric in comparison_linear_metrics + comparison_log_metrics:
         filename = f"figures/comparison_{metric.replace(' ', '_').lower()}.png"
         title = f"{metric} by Model: Static vs Dynamic Pipeline"
-
-        plot_grouped_bar_chart(static_models_results, dynamic_models_results, metric, title, filename)
+        plot_grouped_bar_chart(
+            static_models_results, dynamic_models_results, metric, title, filename,
+            log_scale=(metric in comparison_log_metrics)
+        )
 
     # Plot PR-AUC Line Chart
     for pipeline_name, results in pipelines.items():

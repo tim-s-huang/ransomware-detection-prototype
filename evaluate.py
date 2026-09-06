@@ -25,16 +25,19 @@ def calculate_metrics(model, val_x, val_y, predictions, probabilities):
     # Access Current Python Process
     current_process = psutil.Process(os.getpid())
 
-    # Establish CPU Baseline
-    current_process.cpu_percent(interval=None)
+    # Establish Memory Usage Before Classification
+    memory_before = current_process.memory_info().rss
 
     # Records Time taken for Classification
     start_time = time.perf_counter()
     model.predict(val_x)
     end_time = time.perf_counter()
 
-    # Records CPU Usage after Classification
-    cpu_after = current_process.cpu_percent(interval=None)
+    # Records Memory Usage after Classification
+    memory_after = current_process.memory_info().rss
+
+    # Calculate Memory Used
+    memory_used = (memory_after - memory_before) / 1024 / 1024
 
     # Calculate Total Runtime
     total_runtime = end_time - start_time
@@ -54,9 +57,8 @@ def calculate_metrics(model, val_x, val_y, predictions, probabilities):
         "False Negative Rate": round(fnr, 4),
         "MCC": round(matthews_corrcoef(val_y, predictions) ,4),
         "PR-AUC": round(average_precision_score(val_y, probabilities), 4),
-        "Total Inference Time": round(total_runtime, 4),
         "Inference Time Per Sample": round(per_sample_runtime, 4),
-        "CPU Usage": round(cpu_after / psutil.cpu_count(), 4),
+        "Memory Usage": round(memory_used, 4),
         "Model Size": round(model_size, 4),
         "Probabilities": probabilities,
         "Y-Values": val_y
