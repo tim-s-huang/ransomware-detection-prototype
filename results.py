@@ -6,6 +6,13 @@ from sklearn.metrics import PrecisionRecallDisplay, ConfusionMatrixDisplay
 
 Path("figures").mkdir(exist_ok=True)
 
+METRIC_UNITS = {
+    "Inference Time Per Sample": "ms",
+    "Model Size": "MB",
+    "Memory Usage": "MB",
+    "CPU Usage": "% of total capacity",
+}
+
 # Debugged with Claude - Plots Bar Chart for Provided Metric and Pipeline
 def plot_bar_chart(results, y_axis_name, title, filename, log_scale=False):
     # Turn Model Names and Values Into Lists
@@ -23,23 +30,24 @@ def plot_bar_chart(results, y_axis_name, title, filename, log_scale=False):
         ax.set_yscale("log")
         ax.set_ylim(min(y_axis_values) * 0.5, max(y_axis_values) * 3)
     else:
-        ax.set_ylim(0, 1.08)
+        ax.set_ylim(0, max(1.08, max(y_axis_values) * 1.2))
 
-    # Loops Over Each Bar and Adds its Value - Debugged with Claude
-    for bar, y_val in zip(bars, y_axis_values):
-        label_y = bar.get_height() * 1.1 if log_scale else bar.get_height() + 0.005
+    # Loops Over Each Bar and Adds its Value
+    for bar in bars:
+        height = bar.get_height()
+        label = f"{height:.4f}" if height < 1 else f"{height:.2f}"
+        label_y = height * 1.1 if log_scale else height + 0.005
         ax.text(
             bar.get_x() + bar.get_width() / 2,
             label_y,
-            f"{y_val:.4f}",
-            ha="center",
-            va="bottom",
-            fontsize=9
+            label,
+            ha="center", va="bottom", fontsize=8
         )
 
-    # Adds Axis Label and Title
-    ax.set_ylabel(y_axis_name)
-    ax.set_title(title)
+    # Adds Y Axis Label and Title Using the Correct Metric if Efficiency Graphs
+    unit = METRIC_UNITS.get(y_axis_name)
+    ax.set_ylabel(f"{y_axis_name} ({unit})" if unit else y_axis_name)
+    ax.set_title(f"{title} (log scale)" if log_scale else title)
 
     # Adds Dashed Horizontal Grid Lines
     ax.grid(linestyle="--", alpha=0.4)
@@ -82,19 +90,22 @@ def plot_grouped_bar_chart(static_results, dynamic_results, metric, title, filen
     else:
         ax.set_ylim(0, max(all_values) * 1.2)
 
-    # Loops Over Each Bar and Adds its Value
+        # Loops Over Each Bar and Adds its Value
     for bars in (static_bars, dynamic_bars):
         for bar in bars:
+            height = bar.get_height()
+            label = f"{height:.4f}" if height < 1 else f"{height:.2f}"
             ax.text(
                 bar.get_x() + bar.get_width() / 2,
-                bar.get_height() + 0.01,
-                f"{bar.get_height():.4f}",
+                height + 0.01,
+                label,
                 ha="center", va="bottom", fontsize=8
             )
 
-    # Adds Y Axis Label and Title
-    ax.set_ylabel(metric)
-    ax.set_title(title)
+    # Adds Y Axis Label and Title Using the Correct Metric if Efficiency Graphs
+    unit = METRIC_UNITS.get(metric)
+    ax.set_ylabel(f"{metric} ({unit})" if unit else metric)
+    ax.set_title(f"{title} (log scale)" if log_scale else title)
 
     # Adds X Axis Labels
     ax.set_xticks(x)
@@ -164,7 +175,7 @@ def export_results_table(results, filename):
              for name, metrics in results.items()}
     pd.DataFrame(clean).T.to_csv(filename)
 
-# Debugged with Claude - Generate all Results and save to Figures Folder
+# Generate all Results and save to Figures Folder
 def display_results(static_models_results, dynamic_models_results):
     pipelines = {
         "Static": static_models_results,
