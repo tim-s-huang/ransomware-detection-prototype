@@ -4,7 +4,6 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from xgboost import XGBClassifier
 
-# Debugged with Claude
 def get_models(ratio):
     # Random Forest Model with 200 Trees and Class Balancing
     rf = RandomForestClassifier(

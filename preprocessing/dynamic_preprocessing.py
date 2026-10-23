@@ -8,7 +8,7 @@ def get_dynamic_data():
     dynamic_file_path = base / "datasets" / "dynamic_ransom_data.csv"
     dynamic_ransom_data = pd.read_csv(dynamic_file_path, header=None)
 
-    # Debugged with Claude - Assigns Column Names based on Dataset Documentation
+    # Assigns Column Names based on Dataset Documentation
     n_cols = dynamic_ransom_data.shape[1]
     dynamic_ransom_data.columns = (
             ["ID", "Ransomware", "Ransomware_Family"]

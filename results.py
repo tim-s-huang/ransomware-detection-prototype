@@ -13,7 +13,7 @@ METRIC_UNITS = {
     "CPU Usage": "% of total capacity",
 }
 
-# Debugged with Claude - Plots Bar Chart for Provided Metric and Pipeline
+# Plots Bar Chart for Provided Metric and Pipeline
 def plot_bar_chart(results, y_axis_name, title, filename, log_scale=False):
     # Turn Model Names and Values Into Lists
     names_list = list(results)
@@ -58,7 +58,7 @@ def plot_bar_chart(results, y_axis_name, title, filename, log_scale=False):
     plt.savefig(filename, dpi=300)
     plt.close()
 
-# Debugged with Claude - Plots Static/Dynamic Comparison Bar Charts
+# Plots Static/Dynamic Comparison Bar Charts
 def plot_grouped_bar_chart(static_results, dynamic_results, metric, title, filename, log_scale=False):
     # Turn Model names and Values into Lists
     model_names = list(static_results)
@@ -121,7 +121,7 @@ def plot_grouped_bar_chart(static_results, dynamic_results, metric, title, filen
     plt.savefig(filename, dpi=300)
     plt.close()
 
-# Debugged with Claude - Plots PR-AUC on Line Chart
+# Plots PR-AUC on Line Chart
 def plot_pr_curves(results, title, filename):
     # Creates Figure and Axes
     fig, ax = plt.subplots(figsize=(7, 6))
@@ -168,7 +168,7 @@ def plot_confusion_matrix(results, model_name, title, filename):
     plt.savefig(filename, dpi=300)
     plt.close()
 
-# Debugged with Claude - Saves Results to CSV
+# Saves Results to CSV
 def export_results_table(results, filename):
     exclude = ("Probabilities", "Y-Values", "Confusion Matrix")
     clean = {name: {k: v for k, v in metrics.items() if k not in exclude}

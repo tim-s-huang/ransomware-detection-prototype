@@ -21,7 +21,6 @@ agent_model = None
 with open("saved_models/static_features.pkl", "rb") as f:
     loaded_expected_features = pickle.load(f)
 
-# Debugged with Claude
 def select_file():
 
     # Allows User to Select CSV
@@ -37,7 +36,6 @@ def select_file():
     else:
         file_label.config(text="No file selected")
 
-# Debugged with Claude
 def load_csv(path, expected_features):
     user_file_csv = pd.read_csv(path)
 

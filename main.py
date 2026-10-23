@@ -8,7 +8,7 @@ import pickle
 from pathlib import Path
 Path("saved_models").mkdir(exist_ok=True)
 
-# Written by Claude - Saves Labelled Ransom/Benign Samples for Demo
+# Saves Labelled Ransom/Benign Samples for Demo
 def save_testing_data(X_static, y_static, n_per_class=10):
     ransomware_idx = y_static[y_static == 1].sample(n_per_class, random_state=42).index
     benign_idx = y_static[y_static == 0].sample(n_per_class, random_state=42).index
