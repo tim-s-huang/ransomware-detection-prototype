@@ -1,6 +1,6 @@
 # Ransomware Detection with Machine Learning
 
-A Python tool that classifies Windows executables as **ransomware or benign** using machine learning, with a simple desktop app to scan samples. Built for my MSc Cyber Security dissertation at Cardiff University.
+A Python tool that classifies Windows executables as **ransomware or benign** using machine learning, with a simple desktop app to scan samples. Built for my MSc Cyber Security dissertation at Cardiff University, 2026.
 
 <img width="839" height="533" alt="detection agent" src="https://github.com/user-attachments/assets/bd46e0d5-0f61-453f-a941-d175457fce5d" />
 
