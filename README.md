@@ -2,6 +2,8 @@
 
 A Python tool that classifies Windows executables as **ransomware or benign** using machine learning, with a simple desktop app to scan samples. Built for my MSc Cyber Security dissertation at Cardiff University.
 
+<img width="839" height="533" alt="detection agent" src="https://github.com/user-attachments/assets/bd46e0d5-0f61-453f-a941-d175457fce5d" />
+
 ## What it does
 - **Trains and compares four models**: Logistic Regression, Random Forest, XGBoost and a soft-voting ensemble
 - **Uses two kinds of data**: *static* features (PE header metadata) and *dynamic* features (behaviour recorded in a sandbox)
@@ -19,7 +21,7 @@ A Python tool that classifies Windows executables as **ransomware or benign** us
 Found XGBoost and Ensemble performed the best on the static features and Ensemble performed the best on the dynamic features. 
 Logistic Regression was found to have the highest trade-off of inference time versus classification metrics, but on the behavioural pipeline.
 
-## Try the scanner (about 2 minutes)
+## Use the Agent
 Pre-trained models and demo samples are included, so no datasets are needed.
 ```bash
 pip install -r requirements.txt
